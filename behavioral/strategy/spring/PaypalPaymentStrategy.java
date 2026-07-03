@@ -2,11 +2,21 @@ package behavioral.strategy.spring;
 
 import org.springframework.stereotype.Component;
 
-@Component("paypal")
+@Component
 public class PaypalPaymentStrategy implements PaymentStrategy {
+
     @Override
-    public void pay(int amount) {
-        System.out.println("Processing PayPal payment: $" + amount);
-        // Add real logic for PayPal payment here
+    public String getPaymentType() {
+        return "PAYPAL";
+    }
+
+    @Override
+    public boolean pay(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        System.out.println("Processing Spring Boot PayPal payment of $" + amount);
+        // Logic thanh toán...
+        return true;
     }
 }

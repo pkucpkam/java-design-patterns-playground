@@ -1,23 +1,29 @@
 package behavioral.strategy.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
-    // Spring Boot will automatically inject all beans implementing PaymentStrategy
-    // The map key is the bean name (e.g., "creditCard", "paypal")
-    private final Map<String, PaymentStrategy> strategies;
 
-    public PaymentService(Map<String, PaymentStrategy> strategies) {
-        this.strategies = strategies;
+    private final Map<String, PaymentStrategy> strategyMap;
+
+    @Autowired
+    public PaymentService(List<PaymentStrategy> strategies) {
+        this.strategyMap = strategies.stream()
+                .collect(Collectors.toMap(PaymentStrategy::getPaymentType, Function.identity()));
     }
 
-    public void processPayment(String method, int amount) {
-        PaymentStrategy strategy = strategies.get(method);
+    public boolean processPayment(String paymentType, double amount) {
+        PaymentStrategy strategy = strategyMap.get(paymentType);
         if (strategy == null) {
-            throw new IllegalArgumentException("Unsupported payment method: " + method);
+            throw new IllegalArgumentException("Unsupported payment type: " + paymentType);
         }
-        strategy.pay(amount);
+        return strategy.pay(amount);
     }
 }

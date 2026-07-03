@@ -1,5 +1,14 @@
 package behavioral.strategy.spring;
 
 public interface PaymentStrategy {
-    void pay(int amount);
+    
+    /**
+     * Xác định loại thanh toán mà strategy này hỗ trợ
+     */
+    String getPaymentType();
+
+    /**
+     * Thực hiện thanh toán
+     */
+    boolean pay(double amount);
 }
