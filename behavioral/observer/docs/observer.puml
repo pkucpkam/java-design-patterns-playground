@@ -1,0 +1,45 @@
+@startuml
+interface OrderObserver {
+    +update(Order)
+}
+
+interface OrderSubject {
+    +attach(OrderObserver)
+    +detach(OrderObserver)
+    +notifyObservers(Order)
+}
+
+class OrderService {
+    -observers: List<OrderObserver>
+    +attach(OrderObserver)
+    +detach(OrderObserver)
+    +notifyObservers(Order)
+    +updateOrderStatus(Order, String)
+}
+
+class EmailTracker {
+    +update(Order)
+}
+
+class SmsTracker {
+    +update(Order)
+}
+
+class MobileAppTracker {
+    +update(Order)
+}
+
+class Order {
+    -id: String
+    -status: String
+}
+
+OrderSubject <|.. OrderService
+OrderObserver <|.. EmailTracker
+OrderObserver <|.. SmsTracker
+OrderObserver <|.. MobileAppTracker
+
+OrderService o--> OrderObserver
+OrderService --> Order
+OrderObserver ..> Order
+@enduml
